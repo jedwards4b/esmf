@@ -14,18 +14,18 @@ include $(ESMF_DIR)/makefile
 DIRS      =
 ifeq ($(ESMF_PIO),internal)
 #DIRS     += PIO
-tree_include: PIO/Makefile
+tree_include: PIO/src/clib/libpioc.a
 PIO/configure:
 	cd PIO
 	autoreconf -i
 
 PIO/Makefile: PIO/configure
 	cd PIO;\
-	CC=$(ESMF_CXXCOMPILER) FC=$(ESMF_F90COMPILER) ./configure --enable-fortran
+	CC=mpicc FC=$(ESMF_F90COMPILER) ./configure --enable-fortran
 
-PIO/src/clib/libpio.a: PIO/Makefile
+PIO/src/clib/libpioc.a: PIO/Makefile
 	cd PIO;\
-	$(Make)
+	$(MAKE)
 
 endif
 DIRS     += src interface tests doc
