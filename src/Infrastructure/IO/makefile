@@ -1,4 +1,4 @@
-# $Id$ 
+# $Id$
 
 ALL: build_here
 
@@ -8,17 +8,28 @@ LOCDIR	  = src/Infrastructure/IO/
 
 # Leave this line alone.
 include $(ESMF_DIR)/makefile
-
-# The DIRS line needs to contain all subdirectories which exist 
+# The DIRS line needs to contain all subdirectories which exist
 # directly below this directory, and have either library,
 # example/test code, or documents which need to be generated.
-DIRS      = 
+DIRS      =
 ifeq ($(ESMF_PIO),internal)
-DIRS     += PIO
+#DIRS     += PIO
+tree_include: PIO/Makefile
+PIO/configure:
+	cd PIO
+	autoreconf -i
+
+PIO/Makefile: PIO/configure
+	cd PIO;\
+	CC=$(ESMF_CXXCOMPILER) FC=$(ESMF_F90COMPILER) ./configure --enable-fortran
+
+PIO/src/clib/libpio.a: PIO/Makefile
+	cd PIO;\
+	$(Make)
+
 endif
 DIRS     += src interface tests doc
 
 CLEANDIRS   =
 CLEANFILES  =
 CLOBBERDIRS =
-
